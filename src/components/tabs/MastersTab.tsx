@@ -228,6 +228,30 @@ export default function MastersTab() {
                     />
                   </div>
                 </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Default Select Members</label>
+                  <div className="grid grid-cols-3 gap-2 max-h-40 overflow-y-auto border border-pink-200 rounded p-3 bg-white">
+                    {members.map((member) => (
+                      <label key={member.id} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={(formData.defaultSelectMembers as any || []).includes(member.id) || false}
+                          onChange={(e) => {
+                            const newMembers = e.target.checked
+                              ? [...((formData.defaultSelectMembers as any) || []), member.id]
+                              : ((formData.defaultSelectMembers as any) || []).filter((m: string) => m !== member.id);
+                            setFormData({ ...formData, defaultSelectMembers: newMembers });
+                          }}
+                          className="rounded"
+                        />
+                        <span className="text-sm">{member.nameJa}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Selected: {((formData.defaultSelectMembers as any) || []).length} members
+                  </p>
+                </div>
               </>
             )}
             <div className="flex gap-2 pt-4">
@@ -296,6 +320,12 @@ export default function MastersTab() {
                   </button>
                 </div>
               </div>
+              {masterType === 'songs' && (
+                <div className="text-xs text-gray-600 space-y-1">
+                  <p>Duration: {Math.floor((item as Song).duration / 60)}m {(item as Song).duration % 60}s</p>
+                  <p>Default Select Members: {((item as Song).defaultSelectMembers?.length || 0)} members</p>
+                </div>
+              )}
             </div>
           ))}
         </div>
