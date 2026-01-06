@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf8f8;
+  --foreground: #2d2d2d;
 }
 
 @theme inline {
@@ -14,8 +14,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #1a1a1a;
+    --foreground: #f0f0f0;
   }
 }
 
@@ -23,4 +23,59 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Hato Bito カスタムスタイル */
+.hato-btn-primary {
+  background: linear-gradient(135deg, #ec4899 0%, #ef4444 100%);
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.hato-btn-primary:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.hato-btn-secondary {
+  border: 2px solid #ec4899;
+  color: #be185d;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.hato-btn-secondary:hover {
+  background-color: #fce7f3;
+}
+
+.hato-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  border-left: 4px solid #ec4899;
+}
+
+.hato-header {
+  background: linear-gradient(135deg, #ec4899 0%, #ef4444 100%);
+  color: white;
+  padding: 1rem;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.hato-tab-active {
+  border-bottom: 4px solid #dc2626;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.hato-tab-inactive {
+  color: #999999;
+  font-weight: 500;
 }

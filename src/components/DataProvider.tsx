@@ -32,7 +32,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [setlists, setSetlists] = useState<Setlist[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // 初期化時にダミーデータをロード
   useEffect(() => {
     if (!isLoaded) {
       setMembers(dummyMembers);
