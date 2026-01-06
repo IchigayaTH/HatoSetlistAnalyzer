@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useData } from '@/components/DataProvider';
 import { Event } from '@/types';
 
@@ -8,12 +8,22 @@ export default function EventsTab() {
   const { events, members, addEvent, updateEvent, deleteEvent } = useData();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [formData, setFormData] = useState<Partial<Event>>({
     date: '',
     name: '',
     venue: '',
     participatingMembers: [],
   });
+
+  const sortedEvents = useMemo(() => {
+    const sorted = [...events].sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+    return sorted;
+  }, [events, sortOrder]);
 
   const handleAddClick = () => {
     setEditingId(null);
@@ -150,12 +160,20 @@ export default function EventsTab() {
       )}
 
       <div className="space-y-4">
-        <h3 className="text-xl font-bold text-gray-700">Events</h3>
+        <div className="flex justify-between items-center">
+          <h3 className="text-xl font-bold text-gray-700">Events</h3>
+          <button
+            onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+            className="text-sm font-semibold px-3 py-1 rounded border-2 border-pink-300 text-pink-600 hover:bg-pink-50 transition-all"
+          >
+            {sortOrder === 'desc' ? '📅 Newest First' : '📅 Oldest First'}
+          </button>
+        </div>
         {events.length === 0 ? (
           <p className="text-center text-gray-500 py-8">No events yet</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {events.map((event) => (
+            {sortedEvents.map((event) => (
               <div key={event.id} className="hato-card">
                 <div className="flex justify-between items-start mb-2">
                   <div>

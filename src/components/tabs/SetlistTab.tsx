@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useData } from '@/components/DataProvider';
 import { Setlist, SetlistSong } from '@/types';
 
@@ -10,6 +10,18 @@ export default function SetlistTab() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string>('');
   const [selectedSongs, setSelectedSongs] = useState<SetlistSong[]>([]);
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
+
+  const sortedSetlists = useMemo(() => {
+    const sorted = [...setlists].sort((a, b) => {
+      const eventA = events.find(e => e.id === a.eventId);
+      const eventB = events.find(e => e.id === b.eventId);
+      const dateA = eventA ? new Date(eventA.date).getTime() : 0;
+      const dateB = eventB ? new Date(eventB.date).getTime() : 0;
+      return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+    return sorted;
+  }, [setlists, events, sortOrder]);
 
   const handleAddClick = () => {
     setEditingId(null);
@@ -130,12 +142,20 @@ export default function SetlistTab() {
       )}
 
       <div className="space-y-4">
-        <h3 className="text-xl font-bold text-gray-700">Setlists</h3>
+        <div className="flex justify-between items-center">
+          <h3 className="text-xl font-bold text-gray-700">Setlists</h3>
+          <button
+            onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+            className="text-sm font-semibold px-3 py-1 rounded border-2 border-pink-300 text-pink-600 hover:bg-pink-50 transition-all"
+          >
+            {sortOrder === 'desc' ? '📅 Newest First' : '📅 Oldest First'}
+          </button>
+        </div>
         {setlists.length === 0 ? (
           <p className="text-center text-gray-500 py-8">No setlists yet</p>
         ) : (
           <div className="space-y-3">
-            {setlists.map((setlist) => {
+            {sortedSetlists.map((setlist) => {
               const event = events.find(e => e.id === setlist.eventId);
               return (
                 <div key={setlist.id} className="hato-card">
