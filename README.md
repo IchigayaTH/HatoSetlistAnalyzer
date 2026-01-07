@@ -1,4 +1,4 @@
-# Hato Bito Setlist Analyzer
+# HatoBito Setlist Analyzer
 
 A Next.js-based web application for managing and analyzing setlists of HatoBito, a Thai underground idol group. This application tracks setlist performances, member participation, and provides statistical insights and predictions for future events.
 
@@ -88,7 +88,7 @@ src/
 
 ## Design Features
 
-- **Color Scheme**: Pink and red theme based on Hato Bito branding
+- **Color Scheme**: Pink and red theme based on HatoBito branding
 - **Responsive Layout**:
   - PC: Left sidebar navigation (gray)
   - Mobile: Bottom tab navigation bar

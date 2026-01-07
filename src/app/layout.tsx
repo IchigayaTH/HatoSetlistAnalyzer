@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hato Bito Setlist Analyzer",
+  title: "HatoBito Setlist Analyzer",
   description: "Setlist management and analysis app",
 };
 

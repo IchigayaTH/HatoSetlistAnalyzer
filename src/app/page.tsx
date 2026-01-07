@@ -33,7 +33,7 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       <header className="bg-pink-600 text-white shadow-lg sticky top-0 z-40">
         <div className="container mx-auto px-4 py-6">
-          <h1 className="text-4xl font-bold">Hato Bito</h1>
+          <h1 className="text-4xl font-bold">HatoBito</h1>
           <p className="text-sm text-white/90 mt-1">Setlist Analyzer</p>
         </div>
       </header>

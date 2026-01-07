@@ -136,7 +136,7 @@ export const dummyMembers: Member[] = [
 export const dummySongs: Song[] = [
   {
     id: 's1',
-    title: 'Hato Bito Love',
+    title: 'HatoBito Love',
     titleJa: 'ハトビトラブ',
     releaseDate: '2021-01-15',
     duration: 240,
@@ -204,7 +204,7 @@ export const dummyEvents: Event[] = [
   {
     id: 'e1',
     date: '2024-01-15',
-    name: 'Hato Bito Live vol.1',
+    name: 'HatoBito Live vol.1',
     venue: 'Bangkok Studio',
     participatingMembers: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']
   },

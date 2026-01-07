@@ -81,7 +81,7 @@ export default function SetlistTab() {
     setSelectedSongs(newSongs);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedEventId || selectedSongs.length === 0) {
       alert('Select event and at least one song');
@@ -89,7 +89,7 @@ export default function SetlistTab() {
     }
 
     if (editingId) {
-      updateSetlist({
+      await updateSetlist({
         id: editingId,
         eventId: selectedEventId,
         songs: selectedSongs,
@@ -97,7 +97,7 @@ export default function SetlistTab() {
         updatedAt: new Date().toISOString(),
       });
     } else {
-      addSetlist({
+      await addSetlist({
         id: `sl${Date.now()}`,
         eventId: selectedEventId,
         songs: selectedSongs,

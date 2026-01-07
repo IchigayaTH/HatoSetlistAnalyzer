@@ -42,7 +42,7 @@ export default function EventsTab() {
     setIsFormOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.date || !formData.name || !formData.venue) {
       alert('All required fields must be filled');
@@ -50,7 +50,7 @@ export default function EventsTab() {
     }
 
     if (editingId) {
-      updateEvent({
+      await updateEvent({
         id: editingId,
         date: formData.date,
         name: formData.name,
@@ -59,7 +59,7 @@ export default function EventsTab() {
         notes: formData.notes,
       } as Event);
     } else {
-      addEvent({
+      await addEvent({
         id: `e${Date.now()}`,
         date: formData.date,
         name: formData.name,
@@ -106,7 +106,7 @@ export default function EventsTab() {
                 value={formData.name || ''}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full border-2 border-pink-200 rounded px-3 py-2 focus:outline-none focus:border-red-500"
-                placeholder="e.g., Hato Bito Live vol.1"
+                placeholder="e.g., HatoBito Live vol.1"
               />
             </div>
             <div>
