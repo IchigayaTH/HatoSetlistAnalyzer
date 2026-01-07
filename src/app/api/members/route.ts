@@ -4,7 +4,7 @@ import { Member } from '@/types';
 
 export async function GET() {
   try {
-    const data = getAllData();
+    const data = await getAllData();
     return NextResponse.json(data.members);
   } catch (error) {
     console.error('Error fetching members:', error);
@@ -18,7 +18,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const member: Member = await request.json();
-    const data = addMember(member);
+    const data = await addMember(member);
     return NextResponse.json(data.members, { status: 201 });
   } catch (error) {
     console.error('Error creating member:', error);
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const member: Member = await request.json();
-    const data = updateMember(member);
+    const data = await updateMember(member);
     return NextResponse.json(data.members);
   } catch (error) {
     console.error('Error updating member:', error);
@@ -46,7 +46,7 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const { memberId } = await request.json();
-    const data = deleteMember(memberId);
+    const data = await deleteMember(memberId);
     return NextResponse.json(data.members);
   } catch (error) {
     console.error('Error deleting member:', error);

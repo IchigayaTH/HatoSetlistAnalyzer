@@ -21,7 +21,7 @@ const getDataFilePath = (): string => {
 };
 
 // Load data from file
-export const loadData = (): StorageData => {
+export const loadData = async (): Promise<StorageData> => {
   const filePath = getDataFilePath();
   
   try {
@@ -43,7 +43,7 @@ export const loadData = (): StorageData => {
 };
 
 // Save data to file
-export const saveData = (data: StorageData): void => {
+export const saveData = async (data: StorageData): Promise<void> => {
   const filePath = getDataFilePath();
   
   try {
@@ -55,94 +55,94 @@ export const saveData = (data: StorageData): void => {
 };
 
 // Get all data
-export const getAllData = (): StorageData => {
+export const getAllData = async (): Promise<StorageData> => {
   return loadData();
 };
 
 // Member operations
-export const addMember = (member: Member): StorageData => {
-  const data = loadData();
+export const addMember = async (member: Member): Promise<StorageData> => {
+  const data = await loadData();
   data.members.push(member);
-  saveData(data);
+  await saveData(data);
   return data;
 };
 
-export const updateMember = (member: Member): StorageData => {
-  const data = loadData();
+export const updateMember = async (member: Member): Promise<StorageData> => {
+  const data = await loadData();
   data.members = data.members.map(m => m.id === member.id ? member : m);
-  saveData(data);
+  await saveData(data);
   return data;
 };
 
-export const deleteMember = (memberId: string): StorageData => {
-  const data = loadData();
+export const deleteMember = async (memberId: string): Promise<StorageData> => {
+  const data = await loadData();
   data.members = data.members.filter(m => m.id !== memberId);
-  saveData(data);
+  await saveData(data);
   return data;
 };
 
 // Song operations
-export const addSong = (song: Song): StorageData => {
-  const data = loadData();
+export const addSong = async (song: Song): Promise<StorageData> => {
+  const data = await loadData();
   data.songs.push(song);
-  saveData(data);
+  await saveData(data);
   return data;
 };
 
-export const updateSong = (song: Song): StorageData => {
-  const data = loadData();
+export const updateSong = async (song: Song): Promise<StorageData> => {
+  const data = await loadData();
   data.songs = data.songs.map(s => s.id === song.id ? song : s);
-  saveData(data);
+  await saveData(data);
   return data;
 };
 
-export const deleteSong = (songId: string): StorageData => {
-  const data = loadData();
+export const deleteSong = async (songId: string): Promise<StorageData> => {
+  const data = await loadData();
   data.songs = data.songs.filter(s => s.id !== songId);
-  saveData(data);
+  await saveData(data);
   return data;
 };
 
 // Event operations
-export const addEvent = (event: Event): StorageData => {
-  const data = loadData();
+export const addEvent = async (event: Event): Promise<StorageData> => {
+  const data = await loadData();
   data.events.push(event);
-  saveData(data);
+  await saveData(data);
   return data;
 };
 
-export const updateEvent = (event: Event): StorageData => {
-  const data = loadData();
+export const updateEvent = async (event: Event): Promise<StorageData> => {
+  const data = await loadData();
   data.events = data.events.map(e => e.id === event.id ? event : e);
-  saveData(data);
+  await saveData(data);
   return data;
 };
 
-export const deleteEvent = (eventId: string): StorageData => {
-  const data = loadData();
+export const deleteEvent = async (eventId: string): Promise<StorageData> => {
+  const data = await loadData();
   data.events = data.events.filter(e => e.id !== eventId);
-  saveData(data);
+  await saveData(data);
   return data;
 };
 
 // Setlist operations
-export const addSetlist = (setlist: Setlist): StorageData => {
-  const data = loadData();
+export const addSetlist = async (setlist: Setlist): Promise<StorageData> => {
+  const data = await loadData();
   data.setlists.push(setlist);
-  saveData(data);
+  await saveData(data);
   return data;
 };
 
-export const updateSetlist = (setlist: Setlist): StorageData => {
-  const data = loadData();
+export const updateSetlist = async (setlist: Setlist): Promise<StorageData> => {
+  const data = await loadData();
   data.setlists = data.setlists.map(s => s.id === setlist.id ? setlist : s);
-  saveData(data);
+  await saveData(data);
   return data;
 };
 
-export const deleteSetlist = (setlistId: string): StorageData => {
-  const data = loadData();
+export const deleteSetlist = async (setlistId: string): Promise<StorageData> => {
+  const data = await loadData();
   data.setlists = data.setlists.filter(s => s.id !== setlistId);
-  saveData(data);
+  await saveData(data);
   return data;
 };

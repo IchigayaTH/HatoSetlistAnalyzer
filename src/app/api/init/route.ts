@@ -3,7 +3,7 @@ import { initializeStorage } from '@/lib/storageInit';
 
 export async function POST() {
   try {
-    initializeStorage();
+    await initializeStorage();
     return NextResponse.json({ message: 'Storage initialized successfully' });
   } catch (error) {
     console.error('Error initializing storage:', error);

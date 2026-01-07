@@ -4,7 +4,7 @@ import { Setlist } from '@/types';
 
 export async function GET() {
   try {
-    const data = getAllData();
+    const data = await getAllData();
     return NextResponse.json(data.setlists);
   } catch (error) {
     console.error('Error fetching setlists:', error);
@@ -18,7 +18,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const setlist: Setlist = await request.json();
-    const data = addSetlist(setlist);
+    const data = await addSetlist(setlist);
     return NextResponse.json(data.setlists, { status: 201 });
   } catch (error) {
     console.error('Error creating setlist:', error);
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const setlist: Setlist = await request.json();
-    const data = updateSetlist(setlist);
+    const data = await updateSetlist(setlist);
     return NextResponse.json(data.setlists);
   } catch (error) {
     console.error('Error updating setlist:', error);
@@ -46,7 +46,7 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const { setlistId } = await request.json();
-    const data = deleteSetlist(setlistId);
+    const data = await deleteSetlist(setlistId);
     return NextResponse.json(data.setlists);
   } catch (error) {
     console.error('Error deleting setlist:', error);

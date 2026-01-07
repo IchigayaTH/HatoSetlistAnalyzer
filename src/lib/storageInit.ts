@@ -7,9 +7,9 @@ import { saveData } from './storage';
  * Initialize storage with dummy data
  * Run this once to populate the storage.json file with initial data
  */
-export const initializeStorage = (): void => {
+export const initializeStorage = async (): Promise<void> => {
   try {
-    saveData({
+    await saveData({
       members: dummyMembers,
       songs: dummySongs,
       events: dummyEvents,

@@ -4,7 +4,7 @@ import { Song } from '@/types';
 
 export async function GET() {
   try {
-    const data = getAllData();
+    const data = await getAllData();
     return NextResponse.json(data.songs);
   } catch (error) {
     console.error('Error fetching songs:', error);
@@ -18,7 +18,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const song: Song = await request.json();
-    const data = addSong(song);
+    const data = await addSong(song);
     return NextResponse.json(data.songs, { status: 201 });
   } catch (error) {
     console.error('Error creating song:', error);
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const song: Song = await request.json();
-    const data = updateSong(song);
+    const data = await updateSong(song);
     return NextResponse.json(data.songs);
   } catch (error) {
     console.error('Error updating song:', error);
@@ -46,7 +46,7 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const { songId } = await request.json();
-    const data = deleteSong(songId);
+    const data = await deleteSong(songId);
     return NextResponse.json(data.songs);
   } catch (error) {
     console.error('Error deleting song:', error);
