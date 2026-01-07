@@ -53,22 +53,43 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         let eventsData: Event[] = [];
         let setlistsData: Setlist[] = [];
 
-        if (membersRes?.ok && songsRes?.ok && eventsRes?.ok && setlistsRes?.ok) {
+        // Parse responses
+        if (membersRes?.ok) {
           try {
             membersData = await membersRes.json();
+          } catch (e) {
+            console.error('Error parsing members:', e);
+          }
+        }
+        if (songsRes?.ok) {
+          try {
             songsData = await songsRes.json();
+          } catch (e) {
+            console.error('Error parsing songs:', e);
+          }
+        }
+        if (eventsRes?.ok) {
+          try {
             eventsData = await eventsRes.json();
+          } catch (e) {
+            console.error('Error parsing events:', e);
+          }
+        }
+        if (setlistsRes?.ok) {
+          try {
             setlistsData = await setlistsRes.json();
-          } catch (parseError) {
-            console.error('Error parsing JSON:', parseError);
+          } catch (e) {
+            console.error('Error parsing setlists:', e);
           }
         }
 
         // If data is empty, initialize with dummy data
-        if (membersData.length === 0 && songsData.length === 0 && eventsData.length === 0) {
+        if (membersData.length === 0 && songsData.length === 0 && eventsData.length === 0 && setlistsData.length === 0) {
+          console.log('Data is empty, initializing with dummy data...');
           try {
             const initRes = await fetch('/api/init', { method: 'POST' });
             if (initRes.ok) {
+              console.log('Storage initialized, fetching data again...');
               const initResponses = await Promise.all([
                 fetch('/api/members').catch(() => null),
                 fetch('/api/songs').catch(() => null),
@@ -78,18 +99,28 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
               
               const [newMembersRes, newSongsRes, newEventsRes, newSetlistsRes] = initResponses;
               
-              if (newMembersRes?.ok && newSongsRes?.ok && newEventsRes?.ok && newSetlistsRes?.ok) {
+              if (newMembersRes?.ok) {
                 membersData = await newMembersRes.json();
+              }
+              if (newSongsRes?.ok) {
                 songsData = await newSongsRes.json();
+              }
+              if (newEventsRes?.ok) {
                 eventsData = await newEventsRes.json();
+              }
+              if (newSetlistsRes?.ok) {
                 setlistsData = await newSetlistsRes.json();
               }
+            } else {
+              console.error('Failed to initialize storage:', initRes.status);
             }
           } catch (initError) {
             console.error('Error initializing storage:', initError);
           }
         }
 
+        console.log('Loaded data:', { members: membersData.length, songs: songsData.length, events: eventsData.length, setlists: setlistsData.length });
+        
         setMembers(membersData);
         setSongs(songsData);
         setEvents(eventsData);
