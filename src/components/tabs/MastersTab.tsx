@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useData } from '@/components/DataProvider';
+import { BackupPanel } from '@/components/BackupPanel';
 import { Member, Song } from '@/types';
 
 type MasterType = 'members' | 'songs';
@@ -329,6 +330,11 @@ export default function MastersTab() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Backup Panel */}
+      <div className="mt-8">
+        <BackupPanel />
       </div>
     </div>
   );
