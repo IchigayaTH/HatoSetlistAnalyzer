@@ -2,15 +2,16 @@
 
 import React, { useState, useMemo } from 'react';
 import { useData } from '@/components/DataProvider';
-import { Setlist, SetlistSong } from '@/types';
+import { SetlistSong } from '@/types';
 
 export default function SetlistTab() {
-  const { events, songs, setlists, addSetlist, updateSetlist, deleteSetlist } = useData();
+  const { events, songs, members, setlists, addSetlist, updateSetlist, deleteSetlist } = useData();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string>('');
   const [selectedSongs, setSelectedSongs] = useState<SetlistSong[]>([]);
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
+  const [expandedSongId, setExpandedSongId] = useState<string | null>(null);
 
   const sortedSetlists = useMemo(() => {
     const sorted = [...setlists].sort((a, b) => {
@@ -27,7 +28,49 @@ export default function SetlistTab() {
     setEditingId(null);
     setSelectedEventId('');
     setSelectedSongs([]);
+    setExpandedSongId(null);
     setIsFormOpen(true);
+  };
+
+  const handleSongToggle = (songId: string) => {
+    const isSelected = selectedSongs.some(s => s.songId === songId);
+    if (isSelected) {
+      setSelectedSongs(selectedSongs.filter(s => s.songId !== songId));
+    } else {
+      const song = songs.find(s => s.id === songId);
+      if (song) {
+        setSelectedSongs([...selectedSongs, {
+          songId: song.id,
+          selectedMembers: song.defaultSelectMembers,
+          notes: '',
+        }]);
+      }
+    }
+  };
+
+  const handleMemberToggle = (songId: string, memberId: string) => {
+    setSelectedSongs(selectedSongs.map(s => {
+      if (s.songId === songId) {
+        const hasMember = s.selectedMembers.includes(memberId);
+        return {
+          ...s,
+          selectedMembers: hasMember
+            ? s.selectedMembers.filter(m => m !== memberId)
+            : [...s.selectedMembers, memberId]
+        };
+      }
+      return s;
+    }));
+  };
+
+  const handleMoveSong = (index: number, direction: 'up' | 'down') => {
+    const newSongs = [...selectedSongs];
+    if (direction === 'up' && index > 0) {
+      [newSongs[index], newSongs[index - 1]] = [newSongs[index - 1], newSongs[index]];
+    } else if (direction === 'down' && index < newSongs.length - 1) {
+      [newSongs[index], newSongs[index + 1]] = [newSongs[index + 1], newSongs[index]];
+    }
+    setSelectedSongs(newSongs);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -97,26 +140,87 @@ export default function SetlistTab() {
                 <div>
                   <label className="block text-sm font-semibold mb-2">Songs in Setlist ({selectedSongs.length})</label>
                   <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto">
-                    {songs.map((song) => (
-                      <label key={song.id} className="flex items-center gap-2 cursor-pointer p-2 hover:bg-pink-50 rounded">
-                        <input
-                          type="checkbox"
-                          checked={selectedSongs.some(s => s.songId === song.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedSongs([...selectedSongs, {
-                                songId: song.id,
-                                selectedMembers: song.defaultSelectMembers,
-                              }]);
-                            } else {
-                              setSelectedSongs(selectedSongs.filter(s => s.songId !== song.id));
-                            }
-                          }}
-                          className="rounded"
-                        />
-                        <span className="text-sm font-semibold">{song.titleJa}</span>
-                      </label>
-                    ))}
+                    {songs.map((song) => {
+                      const selectedSong = selectedSongs.find(s => s.songId === song.id);
+                      const isSelected = selectedSong !== undefined;
+                      const orderNumber = selectedSongs.findIndex(s => s.songId === song.id) + 1;
+                      return (
+                        <div key={song.id} className="border border-pink-200 rounded p-2">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => handleSongToggle(song.id)}
+                              className="rounded"
+                            />
+                            <span className="text-sm font-semibold flex-1">{song.titleJa}</span>
+                            {isSelected && (
+                              <span className="bg-pink-500 text-white px-2 py-0.5 rounded-full text-xs font-bold min-w-max">
+                                #{orderNumber}
+                              </span>
+                            )}
+                          </label>
+                          
+                          {isSelected && (
+                            <div className="mt-3 ml-6 space-y-3 border-l-2 border-pink-200 pl-3">
+                              <div>
+                                <button
+                                  type="button"
+                                  onClick={() => setExpandedSongId(expandedSongId === song.id ? null : song.id)}
+                                  className="text-xs font-semibold text-pink-600 hover:text-pink-800 mb-2"
+                                >
+                                  {expandedSongId === song.id ? '▼ Select Members' : '▶ Select Members'}
+                                </button>
+                                
+                                {expandedSongId === song.id && (
+                                  <div className="grid grid-cols-2 gap-1 max-h-32 overflow-y-auto p-2 bg-pink-50 rounded">
+                                    {members.filter(m => m.status === 'active').map((member) => {
+                                      const isMemberSelected = selectedSong.selectedMembers.includes(member.id);
+                                      return (
+                                        <label key={member.id} className="flex items-center gap-2 cursor-pointer text-xs">
+                                          <input
+                                            type="checkbox"
+                                            checked={isMemberSelected}
+                                            onChange={() => handleMemberToggle(song.id, member.id)}
+                                            className="rounded"
+                                          />
+                                          <span>{member.nameJa}</span>
+                                        </label>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="text-xs text-gray-600">
+                                {selectedSong.selectedMembers.length > 0 && (
+                                  <p>👥 {selectedSong.selectedMembers.map(mid => members.find(m => m.id === mid)?.nameJa).join(', ')}</p>
+                                )}
+                              </div>
+
+                              <div className="flex gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => handleMoveSong(orderNumber - 1, 'up')}
+                                  disabled={orderNumber === 1}
+                                  className="px-2 py-1 text-xs font-semibold bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed rounded"
+                                >
+                                  ↑
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleMoveSong(orderNumber - 1, 'down')}
+                                  disabled={orderNumber === selectedSongs.length}
+                                  className="px-2 py-1 text-xs font-semibold bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed rounded"
+                                >
+                                  ↓
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </>
@@ -176,10 +280,14 @@ export default function SetlistTab() {
                   <div className="space-y-1">
                     {setlist.songs.map((s, idx) => {
                       const song = songs.find(song => song.id === s.songId);
+                      const songMembers = s.selectedMembers.map(mid => members.find(m => m.id === mid)?.nameJa).filter(Boolean);
                       return (
-                        <p key={idx} className="text-sm text-gray-700">
-                          {idx + 1}. {song?.titleJa}
-                        </p>
+                        <div key={idx} className="text-sm text-gray-700 p-2 bg-pink-50 rounded">
+                          <p className="font-semibold">{idx + 1}. {song?.titleJa}</p>
+                          {songMembers.length > 0 && (
+                            <p className="text-xs text-gray-600 mt-1">👥 {songMembers.join(', ')}</p>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
