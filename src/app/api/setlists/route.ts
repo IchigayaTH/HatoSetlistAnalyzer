@@ -7,8 +7,9 @@ export async function GET() {
     const data = getAllData();
     return NextResponse.json(data.setlists);
   } catch (error) {
+    console.error('Error fetching setlists:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch setlists' },
+      { error: 'Failed to fetch setlists', details: String(error) },
       { status: 500 }
     );
   }
@@ -20,8 +21,9 @@ export async function POST(request: NextRequest) {
     const data = addSetlist(setlist);
     return NextResponse.json(data.setlists, { status: 201 });
   } catch (error) {
+    console.error('Error creating setlist:', error);
     return NextResponse.json(
-      { error: 'Failed to create setlist' },
+      { error: 'Failed to create setlist', details: String(error) },
       { status: 400 }
     );
   }
@@ -33,8 +35,9 @@ export async function PUT(request: NextRequest) {
     const data = updateSetlist(setlist);
     return NextResponse.json(data.setlists);
   } catch (error) {
+    console.error('Error updating setlist:', error);
     return NextResponse.json(
-      { error: 'Failed to update setlist' },
+      { error: 'Failed to update setlist', details: String(error) },
       { status: 400 }
     );
   }
@@ -46,8 +49,9 @@ export async function DELETE(request: NextRequest) {
     const data = deleteSetlist(setlistId);
     return NextResponse.json(data.setlists);
   } catch (error) {
+    console.error('Error deleting setlist:', error);
     return NextResponse.json(
-      { error: 'Failed to delete setlist' },
+      { error: 'Failed to delete setlist', details: String(error) },
       { status: 400 }
     );
   }

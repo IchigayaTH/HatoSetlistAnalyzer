@@ -1,3 +1,5 @@
+'use server';
+
 import { dummyMembers, dummySongs, dummyEvents, dummySetlists } from '@/data/dummyData';
 import { saveData } from './storage';
 

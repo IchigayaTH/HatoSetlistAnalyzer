@@ -7,8 +7,9 @@ export async function GET() {
     const data = getAllData();
     return NextResponse.json(data.members);
   } catch (error) {
+    console.error('Error fetching members:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch members' },
+      { error: 'Failed to fetch members', details: String(error) },
       { status: 500 }
     );
   }
@@ -20,8 +21,9 @@ export async function POST(request: NextRequest) {
     const data = addMember(member);
     return NextResponse.json(data.members, { status: 201 });
   } catch (error) {
+    console.error('Error creating member:', error);
     return NextResponse.json(
-      { error: 'Failed to create member' },
+      { error: 'Failed to create member', details: String(error) },
       { status: 400 }
     );
   }
@@ -33,8 +35,9 @@ export async function PUT(request: NextRequest) {
     const data = updateMember(member);
     return NextResponse.json(data.members);
   } catch (error) {
+    console.error('Error updating member:', error);
     return NextResponse.json(
-      { error: 'Failed to update member' },
+      { error: 'Failed to update member', details: String(error) },
       { status: 400 }
     );
   }
@@ -46,8 +49,9 @@ export async function DELETE(request: NextRequest) {
     const data = deleteMember(memberId);
     return NextResponse.json(data.members);
   } catch (error) {
+    console.error('Error deleting member:', error);
     return NextResponse.json(
-      { error: 'Failed to delete member' },
+      { error: 'Failed to delete member', details: String(error) },
       { status: 400 }
     );
   }

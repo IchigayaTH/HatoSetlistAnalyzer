@@ -39,45 +39,68 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(true);
         
         // Try to load data from server
-        const [membersRes, songsRes, eventsRes, setlistsRes] = await Promise.all([
-          fetch('/api/members'),
-          fetch('/api/songs'),
-          fetch('/api/events'),
-          fetch('/api/setlists')
+        const responses = await Promise.all([
+          fetch('/api/members').catch(() => null),
+          fetch('/api/songs').catch(() => null),
+          fetch('/api/events').catch(() => null),
+          fetch('/api/setlists').catch(() => null)
         ]);
 
-        if (membersRes.ok && songsRes.ok && eventsRes.ok && setlistsRes.ok) {
-          const membersData = await membersRes.json();
-          const songsData = await songsRes.json();
-          const eventsData = await eventsRes.json();
-          const setlistsData = await setlistsRes.json();
+        const [membersRes, songsRes, eventsRes, setlistsRes] = responses;
 
-          setMembers(membersData);
-          setSongs(songsData);
-          setEvents(eventsData);
-          setSetlists(setlistsData);
-        } else {
-          // If data is empty on server, initialize with dummy data
-          await fetch('/api/init', { method: 'POST' });
-          const [membersRes, songsRes, eventsRes, setlistsRes] = await Promise.all([
-            fetch('/api/members'),
-            fetch('/api/songs'),
-            fetch('/api/events'),
-            fetch('/api/setlists')
-          ]);
-          
-          const membersData = await membersRes.json();
-          const songsData = await songsRes.json();
-          const eventsData = await eventsRes.json();
-          const setlistsData = await setlistsRes.json();
+        let membersData: Member[] = [];
+        let songsData: Song[] = [];
+        let eventsData: Event[] = [];
+        let setlistsData: Setlist[] = [];
 
-          setMembers(membersData);
-          setSongs(songsData);
-          setEvents(eventsData);
-          setSetlists(setlistsData);
+        if (membersRes?.ok && songsRes?.ok && eventsRes?.ok && setlistsRes?.ok) {
+          try {
+            membersData = await membersRes.json();
+            songsData = await songsRes.json();
+            eventsData = await eventsRes.json();
+            setlistsData = await setlistsRes.json();
+          } catch (parseError) {
+            console.error('Error parsing JSON:', parseError);
+          }
         }
+
+        // If data is empty, initialize with dummy data
+        if (membersData.length === 0 && songsData.length === 0 && eventsData.length === 0) {
+          try {
+            const initRes = await fetch('/api/init', { method: 'POST' });
+            if (initRes.ok) {
+              const initResponses = await Promise.all([
+                fetch('/api/members').catch(() => null),
+                fetch('/api/songs').catch(() => null),
+                fetch('/api/events').catch(() => null),
+                fetch('/api/setlists').catch(() => null)
+              ]);
+              
+              const [newMembersRes, newSongsRes, newEventsRes, newSetlistsRes] = initResponses;
+              
+              if (newMembersRes?.ok && newSongsRes?.ok && newEventsRes?.ok && newSetlistsRes?.ok) {
+                membersData = await newMembersRes.json();
+                songsData = await newSongsRes.json();
+                eventsData = await newEventsRes.json();
+                setlistsData = await newSetlistsRes.json();
+              }
+            }
+          } catch (initError) {
+            console.error('Error initializing storage:', initError);
+          }
+        }
+
+        setMembers(membersData);
+        setSongs(songsData);
+        setEvents(eventsData);
+        setSetlists(setlistsData);
       } catch (error) {
         console.error('Error loading data:', error);
+        // Set empty arrays as fallback
+        setMembers([]);
+        setSongs([]);
+        setEvents([]);
+        setSetlists([]);
       } finally {
         setIsLoading(false);
       }

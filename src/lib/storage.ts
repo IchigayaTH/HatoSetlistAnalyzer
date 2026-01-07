@@ -1,3 +1,5 @@
+'use server';
+
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { Member, Song, Event, Setlist } from '@/types';

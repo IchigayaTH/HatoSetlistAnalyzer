@@ -6,8 +6,9 @@ export async function POST() {
     initializeStorage();
     return NextResponse.json({ message: 'Storage initialized successfully' });
   } catch (error) {
+    console.error('Error initializing storage:', error);
     return NextResponse.json(
-      { error: 'Failed to initialize storage' },
+      { error: 'Failed to initialize storage', details: String(error) },
       { status: 500 }
     );
   }
